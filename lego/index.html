@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" ng-app="trix-lego">
+    <head>
+    <title>Trix:Lego</title>
+    <script src="/lib/angular-dragdrop/components/jquery/jquery.min.js"></script>
+    <script src="/lib/angular-dragdrop/components/jquery-ui/ui/minified/jquery-ui.min.js"></script> 
+    <script src="/lib/angular-dragdrop/components/angular/angular.min.js"></script>
+    <script src="/lib/angular-dragdrop/src/angular-dragdrop.js"></script>
+    <script src="holder-ipsum.js"></script>
+    <link href="/lib/angular-dragdrop/demo/assets/css/jquery-ui.css" rel="stylesheet">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    </head>
+    <body ng-controller="legoCtrl">
+        <div class="container">
+            <h1>Trix: Lego</h1>
+        </div>
+
+        <div class="container" ng-repeat="row in doc.rows">
+            <div class="row">
+                <div ng-repeat="col in row.columns" class="column-outer col-md-{{col.span}}">
+                    <div class="column" 
+                        data-drop="true"
+                        ng-model="row.columns"
+                        jqyoui-droppable="{index:{{$index}}}">
+                        <p  data-drag="true" 
+                            data-jqyoui-options="{revert:'invalid', axis:'x'}"
+                            ng-model="row.columns",
+                            jqyoui-draggable="{animate:false, index:{{$index}}}">{{col.content}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>

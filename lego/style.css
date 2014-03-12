@@ -1,0 +1,14 @@
+[bordered] {
+    box-sizing: border-box;
+}
+
+.row {
+}
+.column-outer {
+}
+.column {
+    min-height: 400px;
+}
+.column p {
+    border-left: 20px solid #f00;
+}
