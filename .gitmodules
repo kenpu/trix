@@ -1,0 +1,9 @@
+[submodule "lib/angular-dragdrop"]
+	path = lib/angular-dragdrop
+	url = https://github.com/codef0rmer/angular-dragdrop.git
+[submodule "lib/intercom.js"]
+	path = lib/intercom.js
+	url = https://github.com/diy/intercom.js.git
+[submodule "lib/marked"]
+	path = lib/marked
+	url = https://github.com/chjj/marked.git
