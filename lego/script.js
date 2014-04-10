@@ -1,4 +1,4 @@
-var app = angular.module('trix-lego', ['ngDragDrop']);
+var app = angular.module('trix-lego', ['ngDragDrop', 'slider']);
 
 app
 .directive("bordered", function() {
@@ -20,6 +20,8 @@ app
         .NewColumn()
         .PackRow()
     ;
+
+    window.$scope = $scope;
  });
 
 function LegoDoc() {
@@ -29,7 +31,8 @@ function LegoDoc() {
 
 LegoDoc.prototype.NewRow = function(options) {
     this.row = {
-        columns: []
+        divisions:  [],     // division points btw [1-11]
+        columns:    [],     // actual columns
     };
     this.rows.push(this.row);
     return this;
@@ -37,31 +40,145 @@ LegoDoc.prototype.NewRow = function(options) {
 LegoDoc.prototype.NewColumn = function(options) {
     var col = {
         content: HolderIpsum.paragraph(),
-        definedSpan: 0,
     }
     this.row.columns.push(col);
-
     return this;
 }
 LegoDoc.prototype.PackRow = function() {
-    var definedSpan = 0;
-    var definedCount = 0;
-    var totalSpan   = 12;
+    var n = this.row.columns.length;
+    var d = Math.floor(12 / n);
+    this.row.divisions = range(n-1).map(function(i) {return d*(i+1)});
 
-    // compute the total defined span and how many
-    this.row.columns.forEach(function(col) {
-        if(col.definedSpan) {
-            definedSpan += col.definedSpan;
-            definedCount += 1;
-        }
-    });
-
-    // spread the undefined span evenly over all default columns
-    var defaultSpan = Math.floor((totalSpan - definedSpan) / (this.row.columns.length - definedCount));
-
-    this.row.columns.forEach(function(col) {
-        col.span = (col.definedSpan) ? col.definedSpan : defaultSpan;
-    });
-
+    var start = 0;
+    for(var i=0; i < n; i++) {
+        var end = (i < n-1) ? this.row.divisions[i] : 12;
+        this.row.columns[i].span = end - start;
+        start = end;
+    }
     return this;
 }
+
+function range(n) {
+    var list = [];
+    for(var i=0; i < n; i++) {
+        list.push(i);
+    }
+    return list;
+}
+
+
+/*======== http://codepen.io/anandthakker/pen/marlo ====== */
+
+(function() {
+  angular.module("slider", []);
+
+  angular.module("slider").directive("slider", function($document, $timeout) {
+    return {
+      restrict: "E",
+      scope: {
+        model: "=",
+        property: "@",
+        step: "@"
+      },
+      replace: true,
+      template: "<div class=\"slider-control\">\n<div class=\"slider\">\n</div>\n</div>",
+      link: function(scope, element, attrs) {
+        var getP, handles, i, mv, pTotal, setP, step, updatePositions, _fn, _i, _len, _ref;
+        element = element.children();
+        element.css('position', 'relative');
+        handles = [];
+        pTotal = 0;
+        step = function() {
+          if ((scope.step != null)) {
+            return parseFloat(scope.step);
+          } else {
+            return 0;
+          }
+        };
+        getP = function(i) {
+          if (scope.property != null) {
+            return scope.model[i][scope.property];
+          } else {
+            return scope.model[i];
+          }
+        };
+        setP = function(i, p) {
+          var s;
+          s = step();
+          if (s > 0) {
+            p = Math.round(p / s) * s;
+          }
+          if (scope.property != null) {
+            return scope.model[i][scope.property] = p;
+          } else {
+            return scope.model[i] = p;
+          }
+        };
+        updatePositions = function() {
+          var handle, i, p, pRunningTotal, x, _i, _len, _results;
+          pTotal = scope.model.reduce(function(sum, item, i) {
+            return sum + getP(i);
+          }, 0);
+          pRunningTotal = 0;
+          _results = [];
+          for (i = _i = 0, _len = handles.length; _i < _len; i = ++_i) {
+            handle = handles[i];
+            p = getP(i);
+            pRunningTotal += p;
+            x = pRunningTotal / pTotal * 100;
+            _results.push(handle.css({
+              left: x + "%",
+              top: "-" + handle.prop("clientHeight") / 2 + "px"
+            }));
+          }
+          return _results;
+        };
+        _ref = scope.model;
+        _fn = function(mv, i) {
+          var handle, startPleft, startPright, startX;
+          if (i === scope.model.length - 1) {
+            return;
+          }
+          handle = angular.element('<div class="slider-handle"></div>');
+          handle.css("position", "absolute");
+          handles.push(handle);
+          element.append(handle);
+          startX = 0;
+          startPleft = startPright = 0;
+          return handle.on("mousedown", function(event) {
+            var mousemove, mouseup,
+              _this = this;
+            mousemove = function(event) {
+              return scope.$apply(function() {
+                var dp;
+                dp = (event.screenX - startX) / element.prop("clientWidth") * pTotal;
+                if (dp < -startPleft || dp > startPright) {
+                  return;
+                }
+                setP(i, startPleft + dp);
+                setP(i + 1, startPright - dp);
+                return updatePositions();
+              });
+            };
+            mouseup = function() {
+              $document.unbind("mousemove", mousemove);
+              return $document.unbind("mouseup", mouseup);
+            };
+            event.preventDefault();
+            startX = event.screenX;
+            startPleft = getP(i);
+            startPright = getP(i + 1);
+            $document.on("mousemove", mousemove);
+            return $document.on("mouseup", mouseup);
+          });
+        };
+        for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+          mv = _ref[i];
+          _fn(mv, i);
+        }
+        return scope.$watch("model", updatePositions, true);
+      }
+    };
+  });
+
+}).call(this);

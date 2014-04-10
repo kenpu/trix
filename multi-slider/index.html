@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" ng-app="trix-multi-slider">
+    <head>
+    <title>Trix:Lego</title>
+    <script src="/lib/angular-dragdrop/components/jquery/jquery.min.js"></script>
+    <script src="/lib/angular-dragdrop/components/angular/angular.min.js"></script>
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <style>
+    ul.multi-slider {
+        width: 100%;
+        marign: 0;
+        padding: 0;
+        list-style: none;
+        position: relative;
+        border: thin solid #aaa;
+        height: 30px;
+    }
+    ul.multi-slider li {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    ul.multi-slider li span {
+        font-weight: bold;
+        cursor: pointer;
+        color: #888;
+    }
+    ul.multi-slider li span:hover {
+        color: #000;
+    }
+    </style>
+    </head>
+    <body ng-controller="Ctrl">
+        <div class="container" style="width: 800px">
+        <multi-slider array="points" range="12" step="1"></multi-slider>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>

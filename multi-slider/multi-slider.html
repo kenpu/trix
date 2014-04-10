@@ -1,0 +1,14 @@
+<ul class="multi-slider">
+    <li class="slider-handle" ng-repeat="x in cumulative()"
+        style="left:{{x/sum()*100}}%">
+        <div ng-switch="$last">
+            <div ng-switch-when="false">
+                <span ng-click="decrease($index)">&lt;</span>
+                <span ng-click="increase($index)">&gt;</span>
+            </div>
+            <div ng-switch-when="true">
+                <span ng-click="append()"> x </span>
+            </div>
+        </div>
+        </li>
+</ul>

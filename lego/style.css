@@ -2,13 +2,43 @@
     box-sizing: border-box;
 }
 
-.row {
-}
 .column-outer {
 }
 .column {
     min-height: 400px;
 }
 .column p {
-    border-left: 20px solid #f00;
+    background: #eee;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: "Old Standard TT";
+    font-size: 12pt;
+}
+
+.divisions {
+    height: 30px;
+}
+
+/* ========= http://codepen.io/anandthakker/pen/marlo ======== */
+
+.slider-control {
+  height: 1em;
+  padding-top: .5em;
+}
+
+.slider {
+  height: 2px;
+  border: 1px solid black;
+}
+
+.slider-handle {
+  height: 2em;
+  width: 2em;
+  border: 1px solid black;
+  border-radius: 2px;
+  background: #fff;
+  cursor: pointer;  
+}
+.slider-handle:hover {
+  background: #ddd;
 }
